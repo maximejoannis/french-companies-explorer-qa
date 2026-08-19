@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>French Companies Explorer</title>
+  <meta name="description" content="Application QA utilisant l'API Recherche d'Entreprises.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+<header class="topbar">
+  <button class="brand bare" data-route="home"><span class="brand-mark">F</span><span>French Companies Explorer</span></button>
+  <nav class="nav">
+    <button class="nav-link" data-route="search">Recherche</button>
+    <button class="nav-link" data-route="favorites">Favoris</button>
+    <button class="nav-link" data-route="compare">Comparer</button>
+    <button class="nav-link" data-route="history">Historique</button><button id="themeToggle" class="nav-link" aria-label="Changer le thème">☾</button>
+  </nav>
+</header>
+
+<main class="shell">
+<section id="homeView" class="view">
+  <section class="hero">
+    <div>
+      <p class="eyebrow">QA TRAINING · DATA.GOUV.FR</p>
+      <h1>Explore les entreprises françaises avec une vraie API publique.</h1>
+      <p class="lead">Recherche, filtres, fiches détaillées, favoris, historique et comparaison : une base moderne pour apprendre Playwright sur des données réelles.</p>
+      <div class="actions">
+        <button class="button" data-route="search">Commencer une recherche</button>
+        <button class="button secondary" id="randomDemoBtn">Voir un exemple</button>
+      </div>
+    </div>
+    <div class="hero-art" aria-hidden="true">
+      <div class="hero-glow glow-one"></div>
+      <div class="hero-glow glow-two"></div>
+      <span class="floating-tech tech-html">HTML</span>
+      <span class="floating-tech tech-css">CSS</span>
+      <span class="floating-tech tech-js">JS</span>
+      <span class="floating-tech tech-api">API</span>
+      <span class="floating-tech tech-qa">QA</span>
+      <div class="dashboard">
+        <div class="dashboard-head"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+        <div class="bar big"></div><div class="bar"></div>
+        <div class="tiles"><span></span><span></span><span></span><span></span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="stats">
+    <article class="stat"><span>⌕</span><b>Recherche réelle</b><p>Connexion directe à l'API Recherche d'Entreprises.</p></article>
+    <article class="stat"><span>★</span><b>Favoris locaux</b><p>Conserve des entreprises dans le navigateur.</p></article>
+    <article class="stat"><span>⇆</span><b>Comparaison</b><p>Compare deux entreprises sur les principales données.</p></article>
+  </section>
+
+  <div class="heading"><div><p class="eyebrow">DÉMONSTRATION</p><h2>Recherches suggérées</h2></div></div>
+  <div class="suggestions">
+    <button data-query="La Poste"><span>📮</span><b>La Poste</b><small>Entreprise nationale</small></button>
+    <button data-query="Renault"><span>🚗</span><b>Renault</b><small>Automobile</small></button>
+    <button data-query="Université de Strasbourg"><span>🎓</span><b>Université</b><small>Administration</small></button>
+    <button data-query="API Restauration"><span>🍽</span><b>API Restauration</b><small>Restauration</small></button>
+  </div>
+</section>
+
+<section id="searchView" class="view hidden">
+  <article class="panel searchbox">
+    <p class="eyebrow">RECHERCHE</p><h2>Trouver une entreprise</h2><p class="muted">Nom, marque, SIREN ou mots-clés.</p>
+    <form id="searchForm" data-testid="search-form">
+      <div class="search-main">
+        <input id="queryInput" type="search" placeholder="Ex. Renault, La Poste, 356000000..." data-testid="query-input">
+        <button class="button" data-testid="search-button">Rechercher</button>
+      </div>
+      <details class="advanced">
+        <summary>Filtres avancés</summary>
+        <div class="filters">
+          <label>Code postal<input id="postalCodeFilter" placeholder="75015"></label>
+          <label>Commune<input id="cityFilter" placeholder="Paris"></label>
+          <label>État<select id="statusFilter"><option value="">Tous</option><option value="A">En activité</option><option value="C">Cessée</option></select></label>
+          <label>Résultats / page<select id="pageSizeFilter"><option>10</option><option selected>20</option><option>25</option></select></label>
+        </div>
+      </details>
+    </form>
+  </article>
+
+  <div class="heading">
+    <div><p class="eyebrow">RÉSULTATS</p><h2 id="resultsTitle">Entreprises</h2></div>
+    <div class="actions"><span id="resultCount" class="pill">0 résultat</span><button id="clearSearchBtn" class="button secondary">Réinitialiser</button></div>
+  </div>
+  
+  <section class="toolbar panel">
+    <div class="toolbar-group">
+      <label>Trier par
+        <select id="sortSelect" data-testid="sort-select">
+          <option value="relevance">Pertinence</option>
+          <option value="name-asc">Nom A → Z</option>
+          <option value="name-desc">Nom Z → A</option>
+          <option value="creation-newest">Création récente</option>
+          <option value="creation-oldest">Création ancienne</option>
+          <option value="status">Statut</option>
+        </select>
+      </label>
+      <button id="saveSearchBtn" class="button secondary">Sauvegarder la recherche</button>
+    </div>
+    <div class="toolbar-group">
+      <button id="exportJsonBtn" class="button secondary">Exporter JSON</button>
+      <button id="exportCsvBtn" class="button secondary">Exporter CSV</button>
+    </div>
+  </section>
+
+  <section id="statsPanel" class="result-stats hidden" data-testid="results-stats"></section>
+  <div id="searchState" class="state"></div>
+
+  <div id="resultsGrid" class="company-grid" data-testid="results-grid"></div>
+  <div id="pagination" class="pagination hidden"><button id="prevPage" class="button secondary">← Précédent</button><span id="pageLabel" class="pill">Page 1</span><button id="nextPage" class="button secondary">Suivant →</button></div>
+</section>
+
+<section id="detailView" class="view hidden">
+  <button class="button secondary" data-route="search">← Retour aux résultats</button>
+  <div id="detailRoot"></div>
+</section>
+
+<section id="favoritesView" class="view hidden">
+  <div class="heading"><div><p class="eyebrow">COLLECTION</p><h2>Mes favoris</h2></div><button id="clearFavoritesBtn" class="button secondary">Tout supprimer</button></div>
+  <div id="favoritesGrid" class="company-grid"></div>
+</section>
+
+<section id="compareView" class="view hidden">
+  <div class="heading"><div><p class="eyebrow">ANALYSE</p><h2>Comparer deux entreprises</h2></div></div>
+  <div id="compareRoot"></div>
+</section>
+
+<section id="historyView" class="view hidden">
+  <div class="heading"><div><p class="eyebrow">LOCAL</p><h2>Historique de recherche</h2></div><button id="clearHistoryBtn" class="button secondary">Effacer</button></div>
+  <div class="detail-grid"><section><p class="eyebrow">HISTORIQUE</p><div id="historyList" class="history"></div></section><section><p class="eyebrow">RECHERCHES SAUVEGARDÉES</p><div id="savedSearchesList" class="history"></div></section></div>
+</section>
+</main>
+
+<div id="toast" class="toast hidden"></div>
+<script src="./app.js"></script>
+</body>
+</html>
