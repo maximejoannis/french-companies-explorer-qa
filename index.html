@@ -69,7 +69,7 @@
     <p class="eyebrow">RECHERCHE</p><h2>Trouver une entreprise</h2><p class="muted">Nom, marque, SIREN ou mots-clés.</p>
     <form id="searchForm" data-testid="search-form">
       <div class="search-main">
-        <input id="queryInput" type="search" placeholder="Ex. Renault, La Poste, 356000000..." data-testid="query-input">
+        <div><input id="queryInput" type="search" placeholder="Ex. Renault, La Poste, 356000000..." data-testid="query-input"><p id="queryHint" class="input-hint"></p></div>
         <button class="button" data-testid="search-button">Rechercher</button>
       </div>
       <details class="advanced">
@@ -110,7 +110,8 @@
   </section>
 
   <section id="statsPanel" class="result-stats hidden" data-testid="results-stats"></section>
-  <div id="searchState" class="state"></div>
+  <div id="activeFilters" class="active-filters hidden" data-testid="active-filters"></div>
+<div id="searchState" class="state"></div>
 
   <div id="resultsGrid" class="company-grid" data-testid="results-grid"></div>
   <div id="pagination" class="pagination hidden"><button id="prevPage" class="button secondary">← Précédent</button><span id="pageLabel" class="pill">Page 1</span><button id="nextPage" class="button secondary">Suivant →</button></div>
