@@ -586,18 +586,33 @@ function renderHistory() {
 }
 
 function addCompare(siren) {
-    const c = current(siren) || S.favorites.find(x => x.siren === siren);
-    if (!c) return toast("Recherche d'abord cette entreprise.");
+    const c =
+        current(siren) ||
+        S.favorites.find(x => x.siren === siren);
+
+    if (!c) {
+        toast("Recherche d'abord cette entreprise.");
+        return;
+    }
+
     if (S.compare.some(x => x.siren === siren)) {
         toast("Déjà dans la comparaison.");
         route("compare");
-        return
+        return;
     }
-    if (S.compare.length >= 3) S.compare.shift();
+
+    if (S.compare.length >= 3) {
+        toast(
+            "La comparaison est limitée à trois entreprises."
+        );
+        route("compare");
+        return;
+    }
+
     S.compare.push(c);
     save("fce_compare", S.compare);
     toast("Ajoutée à la comparaison.");
-    renderCompare()
+    renderCompare();
 }
 
 function renderCompare() {
