@@ -240,20 +240,67 @@ function exportCsv() {
 
 function saveCurrentSearch() {
     const q = $("#queryInput").value.trim();
-    if (!q) return toast("Aucune recherche à sauvegarder.");
-    const name = prompt("Nom de la recherche sauvegardée :", q);
+
+    if (!q) {
+        toast("Aucune recherche à sauvegarder.");
+        return;
+    }
+
+    const name = prompt(
+        "Nom de la recherche sauvegardée :",
+        q
+    );
+
     if (!name) return;
+
     const entry = {
         id: Date.now(),
         name,
         query: q,
-        postalCode: $("#postalCodeFilter").value.trim(),
-        city: $("#cityFilter").value.trim(),
-        status: $("#statusFilter").value,
-        pageSize: +$("#pageSizeFilter").value || 20
+        postalCode:
+            $("#postalCodeFilter").value.trim(),
+        city:
+            $("#cityFilter").value.trim(),
+        status:
+            $("#statusFilter").value,
+        pageSize:
+            +$("#pageSizeFilter").value || 20
     };
+
+    const existingSearch = S.saved.find(saved =>
+        saved.query === entry.query &&
+        saved.postalCode === entry.postalCode &&
+        saved.city === entry.city &&
+        saved.status === entry.status &&
+        saved.pageSize === entry.pageSize
+    );
+
+    if (existingSearch) {
+        /*
+         * Mise à jour de l’entrée existante :
+         * l’identifiant est conservé et le nouveau nom est appliqué.
+         */
+        const updatedSearch = {
+            ...existingSearch,
+            name: entry.name
+        };
+
+        S.saved = [
+            updatedSearch,
+            ...S.saved.filter(
+                saved =>
+                    saved.id !== existingSearch.id
+            )
+        ];
+
+        save("fce_saved", S.saved);
+        toast("Recherche sauvegardée mise à jour.");
+        return;
+    }
+
     S.saved.unshift(entry);
     S.saved = S.saved.slice(0, 12);
+
     save("fce_saved", S.saved);
     toast("Recherche sauvegardée.");
 }
