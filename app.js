@@ -225,9 +225,26 @@ function exportJson() {
     downloadFile("companies-results.json", "application/json;charset=utf-8", JSON.stringify(getVisibleCompanies(), null, 2))
 }
 
-function csvEscape(v) {
-    const s = String(v ?? "");
-    return `"${s.replaceAll('"','""')}"`
+function neutralizeCsvFormula(value) {
+    const text = String(value ?? "");
+
+    /*
+     * Les tableurs peuvent interpréter comme formule toute
+     * cellule commençant, éventuellement après des espaces,
+     * par =, +, -, ou @.
+     */
+    if (/^\s*[=+\-@]/.test(text)) {
+        return `'${text}`;
+    }
+
+    return text;
+}
+
+function csvEscape(value) {
+    const safeValue =
+        neutralizeCsvFormula(value);
+
+    return `"${safeValue.replaceAll('"', '""')}"`;
 }
 
 function exportCsv() {
