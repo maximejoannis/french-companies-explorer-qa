@@ -12,6 +12,7 @@ const S = {
     sort: "relevance",
     theme: localStorage.getItem("fce_theme") || "light"
 };
+let searchController = null;
 const $ = s => document.querySelector(s),
     $$ = s => [...document.querySelectorAll(s)];
 document.documentElement.dataset.theme = S.theme;
@@ -80,14 +81,25 @@ $("#searchForm").onsubmit = e => {
 $("#queryInput").addEventListener("input", renderQueryHint);
 renderQueryHint();
 $("#clearSearchBtn").onclick = () => {
+    searchController?.abort();
+    searchController = null;
     $("#searchForm").reset();
     $("#pageSizeFilter").value = "20";
+    $("#sortSelect").value = "relevance";
+    S.page = 1;
+    S.perPage = 20;
+    S.sort = "relevance";
     S.results = [];
     S.total = 0;
     $("#resultsGrid").innerHTML = "";
     $("#resultCount").textContent = "0 résultat";
     $("#resultsTitle").textContent = "Entreprises";
     $("#pagination").classList.add("hidden");
+    $("#statsPanel").classList.add("hidden");
+    $("#statsPanel").innerHTML = "";
+    renderActiveFilters();
+    renderQueryHint();
+    syncUrl();
     showState("Saisis un nom, un SIREN ou un mot-clé.")
 };
 $("#prevPage").onclick = () => {
@@ -98,7 +110,9 @@ $("#nextPage").onclick = () => {
 };
 $("#clearFavoritesBtn").onclick = () => {
     S.favorites = [];
+    S.favoriteMeta = {};
     save("fce_favorites", S.favorites);
+    save("fce_favorite_meta", S.favoriteMeta);
     renderFavorites();
     toast("Favoris supprimés.")
 };
@@ -124,13 +138,15 @@ function syncUrl() {
     const q = $("#queryInput").value.trim(),
         cp = $("#postalCodeFilter").value.trim(),
         city = $("#cityFilter").value.trim(),
-        st = $("#statusFilter").value;
+        st = $("#statusFilter").value,
+        sort = $("#sortSelect").value;
     if (q) p.set("q", q);
     if (cp) p.set("cp", cp);
     if (city) p.set("city", city);
     if (st) p.set("status", st);
     if (S.page > 1) p.set("page", String(S.page));
     if (S.perPage !== 20) p.set("size", String(S.perPage));
+    if (sort !== "relevance") p.set("sort", sort);
     const url = p.toString() ? `${location.pathname}?${p.toString()}` : location.pathname;
     history.replaceState({}, "", url);
 }
@@ -141,7 +157,9 @@ function restoreFromUrl() {
     if (p.get("cp")) $("#postalCodeFilter").value = p.get("cp");
     if (p.get("city")) $("#cityFilter").value = p.get("city");
     if (p.get("status")) $("#statusFilter").value = p.get("status");
-    if (p.get("size")) $("#pageSizeFilter").value = p.get("size");
+    if (["10", "20", "25"].includes(p.get("size"))) $("#pageSizeFilter").value = p.get("size");
+    const allowedSorts = ["relevance", "name-asc", "name-desc", "creation-newest", "creation-oldest", "status"];
+    if (allowedSorts.includes(p.get("sort"))) $("#sortSelect").value = p.get("sort");
     return {
         hasQuery: !!p.get("q"),
         page: Number(p.get("page") || 1)
@@ -377,11 +395,14 @@ async function search(page) {
     if (cp) p.set("code_postal", cp);
     if (city) p.set("commune", city);
     if (st) p.set("etat_administratif", st);
+    searchController?.abort();
+    searchController = new AbortController();
+    const controller = searchController;
     showState("Recherche en cours…");
     $("#resultsGrid").innerHTML = "";
     $("#pagination").classList.add("hidden");
     try {
-        const r = await fetch(`${API}?${p}`);
+        const r = await fetch(`${API}?${p}`, {signal: controller.signal});
         if (!r.ok) throw new Error();
         const d = await r.json();
         S.results = d.results || [];
@@ -402,9 +423,12 @@ async function search(page) {
         renderPagination();
         renderStats();
         renderActiveFilters();
-    } catch {
+    } catch (error) {
+        if (error.name === "AbortError") return;
         $("#resultCount").textContent = "Erreur API";
         showState("Impossible de joindre l'API. Réessaie dans quelques instants.")
+    } finally {
+        if (searchController === controller) searchController = null;
     }
 }
 
@@ -457,8 +481,9 @@ async function openDetail(siren) {
     let c = current(siren) || S.favorites.find(x => x.siren === siren);
     if (!c) {
         try {
-            const r = await fetch(`${API}?q=${encodeURIComponent(siren)}&per_page=1`),
-                d = await r.json();
+            const r = await fetch(`${API}?q=${encodeURIComponent(siren)}&per_page=1`);
+            if (!r.ok) throw new Error(`HTTP ${r.status}`);
+            const d = await r.json();
             if (d.results?.[0]) c = norm(d.results[0])
         } catch {}
     }
@@ -530,9 +555,9 @@ function renderHistory() {
         savedRoot = $("#savedSearchesList");
     if (!S.history.length) {
         root.innerHTML = '<div class="state">Aucune recherche enregistrée.</div>';
-        return
+    } else {
+        root.innerHTML = S.history.map((x, i) => `<article><div><p><b>${esc(x.query)}</b></p><small class="muted">${esc([x.postalCode,x.city].filter(Boolean).join(" · ")||"Sans filtre géographique")}</small></div><button class="button secondary" data-h="${i}">Relancer</button></article>`).join("");
     }
-    root.innerHTML = S.history.map((x, i) => `<article><div><p><b>${esc(x.query)}</b></p><small class="muted">${esc([x.postalCode,x.city].filter(Boolean).join(" · ")||"Sans filtre géographique")}</small></div><button class="button secondary" data-h="${i}">Relancer</button></article>`).join("");
     root.querySelectorAll("[data-h]").forEach(b => b.onclick = () => {
         const x = S.history[+b.dataset.h];
         route("search");
