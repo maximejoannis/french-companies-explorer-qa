@@ -1,159 +1,188 @@
 <!doctype html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>French Companies Explorer</title>
-  <meta name="description" content="Application QA utilisant l'API Recherche d'Entreprises.">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Portfolio QA de Maxime Joannis : QA technico-fonctionnelle, Playwright, Pytest, tests API, IA testing, BPMN et CI/CD.">
+  <meta name="author" content="Maxime Joannis">
+  <meta name="theme-color" content="#2563eb">
+  <title>Maxime Joannis — Portfolio QA Automation</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
 </head>
 <body>
-<header class="topbar">
-  <button class="brand bare" data-route="home"><span class="brand-mark">F</span><span>French Companies Explorer</span></button>
-  <nav class="nav">
-    <button class="nav-link" data-route="search">Recherche</button>
-    <button class="nav-link" data-route="favorites">Favoris</button>
-    <button class="nav-link" data-route="compare">Comparer</button>
-    <button class="nav-link" data-route="history">Historique</button><button id="themeToggle" class="nav-link" aria-label="Changer le thème">☾</button>
+  <a class="skip-link" href="#main">Aller au contenu</a>
+  <nav class="navbar" id="navbar" aria-label="Navigation principale">
+    <div class="nav-inner container">
+      <a class="logo" href="#hero" aria-label="Maxime Joannis · QA">
+        <span class="logo-mark" aria-hidden="true">MJ</span><span>Maxime Joannis · QA</span>
+      </a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#about">Profil</a></li>
+        <li><a href="#experience">Expérience</a></li>
+        <li><a href="#projects">Projets</a></li>
+        <li><a href="#stack">Stack</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </div>
   </nav>
-</header>
 
-<main class="shell">
-<section id="homeView" class="view">
-  <section class="hero">
-    <div>
-      <p class="eyebrow">QA TRAINING · DATA.GOUV.FR</p>
-      <h1>Explore les entreprises françaises avec une vraie API publique.</h1>
-      <p class="lead">Recherche, filtres, fiches détaillées, favoris, historique et comparaison : une base moderne pour apprendre Playwright sur des données réelles.</p>
-      <div class="actions">
-        <button class="button" data-route="search">Commencer une recherche</button>
-        <button class="button secondary" id="randomDemoBtn">Voir un exemple</button>
-      </div>
-    </div>
-    <div class="hero-art" aria-hidden="true">
-      <div class="hero-glow glow-one"></div>
-      <div class="hero-glow glow-two"></div>
-      <span class="floating-tech tech-html">HTML</span>
-      <span class="floating-tech tech-css">CSS</span>
-      <span class="floating-tech tech-js">JS</span>
-      <span class="floating-tech tech-api">API</span>
-      <span class="floating-tech tech-qa">QA</span>
-      <div class="dashboard">
-        <div class="dashboard-head"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
-        <div class="bar big"></div><div class="bar"></div>
-        <div class="tiles"><span></span><span></span><span></span><span></span></div>
-      </div>
-    </div>
-  </section>
-
-  <section class="stats">
-    <article class="stat"><span>⌕</span><b>Recherche réelle</b><p>Connexion directe à l'API Recherche d'Entreprises.</p></article>
-    <article class="stat"><span>★</span><b>Favoris locaux</b><p>Conserve des entreprises dans le navigateur.</p></article>
-    <article class="stat"><span>⇆</span><b>Comparaison</b><p>Compare deux entreprises sur les principales données.</p></article>
-  </section>
-
-  <div class="heading"><div><p class="eyebrow">DÉMONSTRATION</p><h2>Recherches suggérées</h2></div></div>
-  <div class="suggestions">
-    <button data-query="La Poste"><span>📮</span><b>La Poste</b><small>Entreprise nationale</small></button>
-    <button data-query="Renault"><span>🚗</span><b>Renault</b><small>Automobile</small></button>
-    <button data-query="Université de Strasbourg"><span>🎓</span><b>Université</b><small>Administration</small></button>
-    <button data-query="API Restauration"><span>🍽</span><b>API Restauration</b><small>Restauration</small></button>
-  </div>
-</section>
-
-<section id="searchView" class="view hidden">
-  <article class="panel searchbox">
-    <p class="eyebrow">RECHERCHE</p><h2>Trouver une entreprise</h2><p class="muted">Nom, marque, SIREN ou mots-clés.</p>
-    <form id="searchForm" data-testid="search-form">
-      <div class="search-main">
-        <div>
-          <input
-            id="queryInput"
-            type="search"
-            aria-label="Recherche d’entreprise"
-            placeholder="Ex. Renault, La Poste, 356000000..."
-            data-testid="query-input">
-          <p id="queryHint" class="input-hint"></p>
+  <main id="main">
+    <section class="hero" id="hero">
+      <div class="floating-icons" id="floatingIcons" aria-hidden="true"></div>
+      <div class="container hero-grid">
+        <div class="hero-copy reveal">
+          <h1><span id="typingGreeting" aria-live="polite"></span><span class="gradient-text">Maxime Joannis</span></h1>
+          <p class="hero-title">Ingénieur QA Technico-Fonctionnel · Playwright & Pytest · API · Certifié ISTQB</p>
+          <div class="hero-actions">
+            <a class="btn primary" href="#contact"><i class="fa-solid fa-paper-plane"></i><span>Me contacter</span></a>
+            <a class="btn secondary" href="#projects"><i class="fa-solid fa-flask-vial"></i><span>Voir mes travaux</span></a>
+          </div>
+          <div class="hero-proof" id="heroProof"></div>
         </div>
-        <button class="button" data-testid="search-button">Rechercher</button>
-      </div>
-      <details class="advanced">
-        <summary>Filtres avancés</summary>
-        <div class="filters">
-          <label>Code postal<input id="postalCodeFilter" placeholder="75015"></label>
-          <label>Commune<input id="cityFilter" placeholder="Paris"></label>
-          <label>État<select id="statusFilter"><option value="">Tous</option><option value="A">En activité</option><option value="C">Cessée</option></select></label>
-          <label>Résultats / page<select id="pageSizeFilter"><option>10</option><option selected>20</option><option>25</option></select></label>
+        <div class="hero-visual reveal">
+          <div class="profile-orbits" aria-label="Projets QA en orbite autour du portrait">
+            <div class="orbit orbit-1"><span class="orbit-project">SauceDemo</span></div>
+            <div class="orbit orbit-2"><span class="orbit-project">Restful Booker</span></div>
+            <div class="orbit orbit-3"><span class="orbit-project">SauceDemo V2</span></div>
+            <div class="orbit orbit-4"><span class="orbit-project">Restful Booker V2</span></div>
+            <div class="profile-shell">
+              <img src="assets/img/maxime-joannis.jpg" alt="Portrait de Maxime Joannis" width="640" height="640">
+              <div class="status-chip"><span class="pulse"></span><span>QA & automatisation</span></div>
+            </div>
+          </div>
         </div>
-      </details>
-    </form>
-  </article>
+      </div>
+    </section>
 
-  <div class="heading">
-    <div><p class="eyebrow">RÉSULTATS</p><h2 id="resultsTitle">Entreprises</h2></div>
-    <div class="actions"><span
-  id="resultCount"
-  class="pill"
-  role="status"
-  aria-live="polite"
-  aria-atomic="true">
-  0 résultat
-</span><button id="clearSearchBtn" class="button secondary">Réinitialiser</button></div>
-  </div>
-  
-  <section class="toolbar panel">
-    <div class="toolbar-group">
-      <label>Trier par
-        <select id="sortSelect" data-testid="sort-select">
-          <option value="relevance">Pertinence</option>
-          <option value="name-asc">Nom A → Z</option>
-          <option value="name-desc">Nom Z → A</option>
-          <option value="creation-newest">Création récente</option>
-          <option value="creation-oldest">Création ancienne</option>
-          <option value="status">Statut</option>
-        </select>
-      </label>
-      <button id="saveSearchBtn" class="button secondary">Sauvegarder la recherche</button>
+    <section id="about" class="section">
+      <div class="container">
+        <div class="section-heading reveal"><span class="section-kicker">À propos</span><h2>Une double culture développement + qualité</h2><p>Un profil QA capable d’analyser le métier, investiguer la technique et industrialiser la validation.</p></div>
+        <div class="about-grid">
+          <div class="about-card reveal">
+            <p>Après plusieurs années en développement logiciel, notamment dans le secteur bancaire, j’ai évolué vers la QA fonctionnelle et l’automatisation. Cette trajectoire me permet d’échanger aussi bien avec le métier qu’avec les développeurs et de raisonner en termes de risque, testabilité et traçabilité.</p>
+            <p>Mes missions récentes couvrent la validation de moteurs de scoring, les tests API, les workflows BPMN, la validation d’agents IA, le prompt testing et l’automatisation Playwright / Pytest. Je privilégie une mesure factuelle de la couverture et une documentation exploitable par l’équipe.</p>
+            <div class="social-links">
+              <a href="https://www.linkedin.com/in/maximejoannis" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-linkedin"></i><span>LinkedIn</span></a>
+              <a href="https://github.com/maximejoannis" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-github"></i><span>GitHub</span></a>
+            </div>
+          </div>
+          <div class="principles reveal" id="principles"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="experience" class="section section-soft">
+      <div class="container">
+        <div class="section-heading reveal"><span class="section-kicker">Parcours</span><h2>Expérience professionnelle</h2></div>
+        <div class="timeline" id="timeline"></div>
+      </div>
+    </section>
+
+    <section id="projects" class="section">
+      <div class="container">
+        <div class="section-heading reveal"><span class="section-kicker">Portfolio QA</span><h2>5 projets d’automatisation UI & API</h2><p>Trois frameworks actifs et deux évolutions V2 en préparation.</p></div>
+        <div class="project-filter reveal" id="projectFilter" aria-label="Filtrer les projets">
+          <div class="project-filter__group" role="group" aria-label="Catégorie de projet">
+            <button class="project-filter__btn active" type="button" data-project-filter="all" aria-pressed="true"><i class="fa-solid fa-border-all"></i><span>Tous</span><b data-filter-count="all">5</b></button>
+            <button class="project-filter__btn" type="button" data-project-filter="automation" aria-pressed="false"><i class="fa-solid fa-gears"></i><span>Automatisation</span><b data-filter-count="automation">3</b></button>
+            <button class="project-filter__btn" type="button" data-project-filter="api" aria-pressed="false"><i class="fa-solid fa-plug"></i><span>UI + API</span><b data-filter-count="api">2</b></button>
+            <button class="project-filter__btn" type="button" data-project-filter="soon" aria-pressed="false"><i class="fa-regular fa-clock"></i><span>À venir</span><b data-filter-count="soon">2</b></button>
+          </div>
+          <p class="project-filter__status" id="projectFilterStatus" aria-live="polite">5 projets affichés</p>
+        </div>
+        <div class="project-grid" id="projectGrid"></div>
+      </div>
+    </section>
+
+    <section id="stack" class="section">
+      <div class="container">
+        <div class="section-heading reveal"><span class="section-kicker">Compétences</span><h2>Stack QA & outillage</h2><p>Une stack centrée sur la validation fonctionnelle, l’automatisation, les API et l’industrialisation.</p></div>
+        <div class="stack-grid" id="stackGrid"></div>
+      </div>
+    </section>
+
+    <section id="contact" class="section contact-section">
+      <div class="container contact-layout reveal">
+        <div class="contact-copy">
+          <span class="section-kicker">Échangeons</span>
+          <h2>Un besoin QA, automatisation ou stratégie de test ?</h2>
+          <p>Je peux intervenir sur la conception de tests, l’automatisation Playwright/Pytest, les tests API, la QA d’agents IA et la structuration d’une démarche qualité traçable.</p>
+          <div class="contact-direct">
+            <a href="https://www.linkedin.com/in/maximejoannis" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-linkedin"></i><span><small>LinkedIn</small>maximejoannis</span></a>
+          </div>
+        </div>
+        <form id="contactForm" class="contact-form" action="https://formspree.io/f/mwlerboo" method="POST" novalidate>
+          <div class="form-row">
+            <label class="form-field">
+              <span>Nom <em>*</em></span>
+              <input type="text" name="name" autocomplete="name" placeholder="Votre nom" required maxlength="80">
+            </label>
+            <label class="form-field">
+              <span>Email <em>*</em></span>
+              <input type="email" name="email" autocomplete="email" placeholder="vous@exemple.com" required maxlength="120">
+            </label>
+          </div>
+          <label class="form-field">
+            <span>Objet <em>*</em></span>
+            <input type="text" name="subject" placeholder="Objet de votre message" required maxlength="120">
+          </label>
+          <label class="form-field">
+            <span>Message <em>*</em></span>
+            <textarea name="message" rows="6" placeholder="Parlez-moi de votre besoin, de votre projet ou du contexte QA…" required maxlength="3000"></textarea>
+          </label>
+          <input type="text" name="_gotcha" class="form-honeypot" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <input type="hidden" name="_subject" value="Nouveau message depuis le portfolio QA de Maxime Joannis">
+          <div class="form-footer">
+            <p class="form-note"><i class="fa-solid fa-shield-halved"></i> Vos informations sont utilisées uniquement pour répondre à votre message.</p>
+            <button class="btn primary form-submit" type="submit">
+              <span class="submit-default"><i class="fa-solid fa-paper-plane"></i> Envoyer le message</span>
+              <span class="submit-loading" aria-hidden="true"><i class="fa-solid fa-circle-notch fa-spin"></i> Envoi…</span>
+            </button>
+          </div>
+          <div id="contactStatus" class="contact-status" role="status" aria-live="polite"></div>
+        </form>
+      </div>
+    </section>
+  </main>
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <div class="site-footer__top">
+        <div class="site-footer__profile">
+          <a class="site-footer__brand" href="#hero">Maxime Joannis</a>
+          <p>Ingénieur QA technico-fonctionnel spécialisé en automatisation, tests API et IA Testing. Je transforme les risques qualité en validations traçables, robustes et industrialisables.</p>
+          <div class="site-footer__socials" aria-label="Réseaux et contact">
+            <a href="https://www.linkedin.com/in/maximejoannis" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+            <a href="https://github.com/maximejoannis" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><i class="fa-brands fa-github"></i></a>
+          </div>
+        </div>
+        <div class="site-footer__column">
+          <h2>Navigation</h2>
+          <a href="#hero">Accueil</a>
+          <a href="#about">À propos</a>
+          <a href="#experience">Expérience</a>
+          <a href="#projects">Projets</a>
+          <a href="#contact">Contact</a>
+        </div>
+        <div class="site-footer__column">
+          <h2>Expertises QA</h2>
+          <span>Tests fonctionnels & E2E</span>
+          <span>Playwright & Pytest</span>
+          <span>Tests API</span>
+          <span>IA Testing & Prompt Testing</span>
+          <span>CI/CD & traçabilité</span>
+        </div>
+      </div>
+      <div class="site-footer__bottom">
+        <p>© 2026 Maxime Joannis · Portfolio QA. Tous droits réservés.</p>
+        <div class="site-footer__signature"><span>Conçu avec exigence pour la qualité</span><a href="#hero"><i class="fa-solid fa-arrow-up"></i> Haut</a></div>
+      </div>
     </div>
-    <div class="toolbar-group">
-      <button id="exportJsonBtn" class="button secondary">Exporter JSON</button>
-      <button id="exportCsvBtn" class="button secondary">Exporter CSV</button>
-    </div>
-  </section>
-
-  <section id="statsPanel" class="result-stats hidden" data-testid="results-stats"></section>
-  <div id="activeFilters" class="active-filters hidden" data-testid="active-filters"></div>
-<div id="searchState" class="state"></div>
-
-  <div id="resultsGrid" class="company-grid" data-testid="results-grid"></div>
-  <div id="pagination" class="pagination hidden"><button id="prevPage" class="button secondary">← Précédent</button><span id="pageLabel" class="pill">Page 1</span><button id="nextPage" class="button secondary">Suivant →</button></div>
-</section>
-
-<section id="detailView" class="view hidden">
-  <button class="button secondary" data-route="search">← Retour aux résultats</button>
-  <div id="detailRoot"></div>
-</section>
-
-<section id="favoritesView" class="view hidden">
-  <div class="heading"><div><p class="eyebrow">COLLECTION</p><h2>Mes favoris</h2></div><button id="clearFavoritesBtn" class="button secondary">Tout supprimer</button></div>
-  <div id="favoritesGrid" class="company-grid"></div>
-</section>
-
-<section id="compareView" class="view hidden">
-  <div class="heading"><div><p class="eyebrow">ANALYSE</p><h2>Comparer jusqu’à trois entreprises</h2></div></div>
-  <div id="compareRoot"></div>
-</section>
-
-<section id="historyView" class="view hidden">
-  <div class="heading"><div><p class="eyebrow">LOCAL</p><h2>Historique de recherche</h2></div><button id="clearHistoryBtn" class="button secondary">Effacer</button></div>
-  <div class="detail-grid"><section><p class="eyebrow">HISTORIQUE</p><div id="historyList" class="history"></div></section><section><p class="eyebrow">RECHERCHES SAUVEGARDÉES</p><div id="savedSearchesList" class="history"></div></section></div>
-</section>
-</main>
-
-<div id="toast" class="toast hidden"></div>
-<script src="./app.js"></script>
+  </footer>
+  <button id="toTop" class="to-top" type="button" aria-label="Retour en haut"><i class="fa-solid fa-arrow-up"></i></button>
+  <script src="assets/js/app.js"></script>
 </body>
 </html>
