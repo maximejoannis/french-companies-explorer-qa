@@ -2,6 +2,7 @@
 
 ## 1.1.1 — 2026-09-22
 
+- correction de la régression visuelle du Hero : suppression du contour de focus parasite et adaptation responsive du titre ;
 - correction des 14 anomalies QA documentées ;
 - filtres NAF, département, région, effectif et commune résolue en code INSEE ;
 - autocomplétion accessible et résistante aux réponses obsolètes ;
