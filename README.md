@@ -1,4 +1,6 @@
-# French Companies Explorer — QA Training
+# French Companies Explorer — QA Training v1.1.1
+
+> La version 1.1.1 corrige la baseline QA v1.0.0 et ajoute filtres enrichis, autocomplétion accessible, partage de recherche, comparaison à trois et export configurable. Voir [CHANGELOG.md](./CHANGELOG.md).
 
 [![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Live-2ea44f?logo=github&logoColor=white)](https://maximejoannis.github.io/french-companies-explorer-qa/)
 ![HTML5](https://img.shields.io/badge/HTML5-E34F26?logo=html5&logoColor=white)
@@ -152,6 +154,7 @@ restaurer une recherche directement depuis un lien.
 ## Architecture
 
 Le projet reste volontairement simple et ne nécessite aucun framework.
+
 
 ```text
 french-companies-explorer-qa/

@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>French Companies Explorer</title>
   <meta name="description" content="Application QA utilisant l'API Recherche d'Entreprises.">
+  <meta name="application-name" content="French Companies Explorer 1.1.1">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -74,8 +75,13 @@
             id="queryInput"
             type="search"
             aria-label="Recherche d’entreprise"
+            role="combobox"
+            aria-autocomplete="list"
+            aria-expanded="false"
+            aria-controls="companySuggestions"
             placeholder="Ex. Renault, La Poste, 356000000..."
             data-testid="query-input">
+          <div id="companySuggestions" class="suggestion-list hidden" role="listbox" aria-label="Suggestions d’entreprises"></div>
           <p id="queryHint" class="input-hint"></p>
         </div>
         <button class="button" data-testid="search-button">Rechercher</button>
@@ -84,7 +90,23 @@
         <summary>Filtres avancés</summary>
         <div class="filters">
           <label>Code postal<input id="postalCodeFilter" placeholder="75015"></label>
-          <label>Commune<input id="cityFilter" placeholder="Paris"></label>
+          <label>Commune
+            <input id="cityFilter" placeholder="Paris" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="citySuggestions" autocomplete="off">
+            <input id="cityCodeFilter" type="hidden">
+            <span id="citySuggestions" class="suggestion-list hidden" role="listbox" aria-label="Suggestions de communes"></span>
+          </label>
+          <label>Code NAF<input id="nafFilter" placeholder="56.10A" maxlength="6"></label>
+          <label>Département<input id="departmentFilter" placeholder="75" maxlength="3"></label>
+          <label>Région<input id="regionFilter" placeholder="11" maxlength="2"></label>
+          <label>Tranche d’effectif
+            <select id="workforceFilter">
+              <option value="">Toutes</option><option value="NN">Non renseigné</option><option value="00">0 salarié</option>
+              <option value="01">1–2</option><option value="02">3–5</option><option value="03">6–9</option>
+              <option value="11">10–19</option><option value="12">20–49</option><option value="21">50–99</option>
+              <option value="22">100–199</option><option value="31">200–249</option><option value="32">250–499</option>
+              <option value="41">500–999</option><option value="42">1 000–1 999</option><option value="51">2 000–4 999</option><option value="52">5 000–9 999</option><option value="53">10 000 et plus</option>
+            </select>
+          </label>
           <label>État<select id="statusFilter"><option value="">Tous</option><option value="A">En activité</option><option value="C">Cessée</option></select></label>
           <label>Résultats / page<select id="pageSizeFilter"><option>10</option><option selected>20</option><option>25</option></select></label>
         </div>
@@ -117,10 +139,10 @@
         </select>
       </label>
       <button id="saveSearchBtn" class="button secondary">Sauvegarder la recherche</button>
+      <button id="shareSearchBtn" class="button secondary">Copier le lien de cette recherche</button>
     </div>
     <div class="toolbar-group">
-      <button id="exportJsonBtn" class="button secondary">Exporter JSON</button>
-      <button id="exportCsvBtn" class="button secondary">Exporter CSV</button>
+      <button id="openExportBtn" class="button secondary">Configurer l’export</button>
     </div>
   </section>
 
@@ -153,7 +175,16 @@
 </section>
 </main>
 
-<div id="toast" class="toast hidden"></div>
+<dialog id="exportDialog" aria-labelledby="exportDialogTitle">
+  <form method="dialog" class="export-form">
+    <h2 id="exportDialogTitle">Configurer l’export</h2>
+    <label>Format<select id="exportFormat"><option value="csv">CSV</option><option value="json">JSON</option></select></label>
+    <label>Périmètre<select id="exportScope"><option value="results">Résultats de la page courante</option><option value="compare">Entreprises comparées</option></select></label>
+    <p id="exportHelp" class="muted">L’export est disponible après une recherche réussie.</p>
+    <div class="actions"><button value="cancel" class="button secondary">Annuler</button><button id="confirmExportBtn" value="default" class="button">Télécharger</button></div>
+  </form>
+</dialog>
+<div id="toast" class="toast hidden" role="status" aria-live="polite" aria-atomic="true"></div>
 <script src="./app.js"></script>
 </body>
 </html>
