@@ -18,18 +18,27 @@ const SESSION_KEY = "fce:qa";
  */
 
 /**
+ * Exécute un accès qui peut lever (SecurityError, JSON invalide) et renvoie null en cas d'échec.
+ * @template T
+ * @param {() => T} getter
+ * @returns {T|null}
+ */
+function tryGet(getter) {
+    try {
+        return getter();
+    } catch {
+        return null;
+    }
+}
+
+/**
  * @param {URLSearchParams} params
  * @param {Storage|null} session
  * @returns {QaConfig}
  */
 export function readQaConfig(params, session) {
     /** @type {Partial<QaConfig>} */
-    let stored = {};
-    try {
-        stored = JSON.parse(session?.getItem(SESSION_KEY) || "{}") || {};
-    } catch {
-        stored = {};
-    }
+    const stored = tryGet(() => JSON.parse(session?.getItem(SESSION_KEY) || "{}")) || {};
     const scenario = params.get("qaScenario") ?? stored.scenario ?? "none";
     const latency = Number(params.get("qaLatency") ?? stored.latency ?? 0);
     const storage = String(params.get("qaStorage") ?? stored.storage ?? "normal");
@@ -189,20 +198,10 @@ export function mountQaPanel(doc, config, env) {
  * @param {(ms: number, signal?: AbortSignal) => Promise<void>} sleep
  */
 export function setupQaLab(win, real, sleep) {
-    let session = null;
-    try {
-        session = win.sessionStorage;
-    } catch {
-        session = null;
-    }
+    const session = tryGet(() => win.sessionStorage);
     const config = readQaConfig(new URLSearchParams(win.location.search), session);
     mountQaPanel(win.document, config, { session, history: win.history, location: win.location, reload: () => win.location.reload() });
-    let real$ = null;
-    try {
-        real$ = win.localStorage;
-    } catch {
-        real$ = null;
-    }
+    const real$ = tryGet(() => win.localStorage);
     return { transport: createQaTransport(() => config, real, sleep), storageBackend: createQaStorage(config.storage, real$) };
 }
 

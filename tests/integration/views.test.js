@@ -262,12 +262,12 @@ describe("comparaison (N-8)", () => {
         app.click("#compareShareBtn");
         await settle();
         expect(app.win.__clipboard.at(-1)).toContain("view=compare&sirens=900000001%2C900000019%2C900000027");
-        app.click("[data-rm=900000027]");
-        app.click("[data-rm=900000019]");
+        app.click('[data-rm="900000027"]');
+        app.click('[data-rm="900000019"]');
         expect(app.text("#compareRoot")).toContain("Ajoute une seconde entreprise");
         app.click("#compareShareBtn");
         expect(app.text("#toast")).toContain("au moins deux");
-        app.click("[data-rm=900000001]");
+        app.click('[data-rm="900000001"]');
         expect(app.text("#compareRoot")).toContain("Ajoute jusqu’à 3 entreprises");
     });
 

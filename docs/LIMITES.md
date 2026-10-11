@@ -8,7 +8,7 @@
 4. **Score Lighthouse** non mesuré (outil indisponible dans l'environnement). Accessibilité vérifiée par conception et par tests (noms accessibles, `aria-*`, focus, contrastes, raccourcis désactivables). À mesurer : `npx lighthouse https://maximejoannis.github.io/french-companies-explorer-qa/ --only-categories=accessibility`.
 5. **Couverture** : `src/main.js` (câblage) est exclu comme prévu par le prompt ; `sw.js` est hors de `src/` et n'est pas mesuré, mais sa logique est dans `src/core/cache-strategy.js` (100 %).
 6. **Établissements** : la fiche charge jusqu'à 100 établissements (`limite_matching_etablissements`) et les pagine côté client ; au-delà, seul le total est affiché.
-7. **`legacy-peer-deps`** dans `.npmrc` : contournement d'une erreur de résolution de npm 10 avec Vitest 4 / Vite 8. À retirer dès que npm corrige le problème.
+7. **Outillage** : Vitest 5 a besoin de `vite` en dépendance « peer » ; il est installé automatiquement par npm (le contournement `legacy-peer-deps` de la 2.1.0 a été retiré).
 8. **Licence** : MIT pour le code (choix par défaut, modifiable). L'avis complémentaire du fichier `LICENSE` et `PRIVACY.md` sont informatifs et ne constituent pas un conseil juridique.
 9. **RGPD** : la conformité porte sur ce que fait l'application dans le navigateur. Les journaux de GitHub Pages et des API de l'État relèvent de ces opérateurs. Le statut de diffusion partielle est lu depuis l'API (`statut_diffusion`) ; son comportement exact sur l'API réelle (champs déjà masqués ou non) reste à vérifier.
 
