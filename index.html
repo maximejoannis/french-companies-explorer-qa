@@ -1,37 +1,57 @@
 <!doctype html>
-<html lang="fr">
+<html lang="fr" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'self' https://recherche-entreprises.api.gouv.fr https://geo.api.gouv.fr; worker-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
   <title>French Companies Explorer</title>
-  <meta name="description" content="Application QA utilisant l'API Recherche d'Entreprises.">
-  <meta name="application-name" content="French Companies Explorer 1.1.1">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <meta name="description" content="Application d'entraînement QA utilisant l'API Recherche d'Entreprises (data.gouv.fr).">
+  <meta name="application-name" content="French Companies Explorer 2.1.0">
+  <meta name="theme-color" content="#2563eb">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./assets/icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="./assets/icons/icon-192.png">
+  <link rel="preload" href="./assets/fonts/poppins-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="./styles.css">
+  <script type="module" src="./src/main.js"></script>
 </head>
 <body>
+<a class="skip-link" href="#main" data-i18n="nav.skip">Aller au contenu</a>
+<div id="offlineBanner" class="banner banner-warning hidden" role="status" data-testid="offline-banner"></div>
+<div id="updateBanner" class="banner banner-info hidden" role="status" data-testid="update-available">
+  <span data-i18n="pwa.update">Une nouvelle version est disponible.</span>
+  <button id="updateReloadBtn" type="button" class="button secondary" data-i18n="pwa.reload">Recharger</button>
+</div>
+
 <header class="topbar">
-  <button class="brand bare" data-route="home"><span class="brand-mark">F</span><span>French Companies Explorer</span></button>
-  <nav class="nav">
-    <button class="nav-link" data-route="search">Recherche</button>
-    <button class="nav-link" data-route="favorites">Favoris</button>
-    <button class="nav-link" data-route="compare">Comparer</button>
-    <button class="nav-link" data-route="history">Historique</button><button id="themeToggle" class="nav-link" aria-label="Changer le thème">☾</button>
+  <button class="brand bare" type="button" data-route="home"><span class="brand-mark" aria-hidden="true">F</span><span>French Companies Explorer</span></button>
+  <button id="menuToggle" class="nav-link menu-toggle" type="button" aria-expanded="false" aria-controls="mainNav" data-testid="menu-toggle" data-i18n="nav.menu">Menu</button>
+  <nav id="mainNav" class="nav" data-i18n-attr="aria-label:nav.label" aria-label="Navigation principale">
+    <button class="nav-link" type="button" data-route="search" data-i18n="nav.search">Recherche</button>
+    <button class="nav-link" type="button" data-route="nearby" data-testid="nav-nearby" data-i18n="nav.nearby">À proximité</button>
+    <button class="nav-link" type="button" data-route="favorites" data-i18n="nav.favorites">Favoris</button>
+    <button class="nav-link" type="button" data-route="compare" data-i18n="nav.compare">Comparer</button>
+    <button class="nav-link" type="button" data-route="history" data-i18n="nav.history">Historique</button>
+    <button class="nav-link" type="button" data-route="about" data-testid="nav-about" data-i18n="nav.about">À propos</button>
+    <button id="langSwitch" class="nav-link" type="button" data-testid="lang-switch">EN</button>
+    <button id="preferencesBtn" class="nav-link" type="button" data-testid="preferences-open" data-i18n-attr="aria-label:prefs.open" aria-label="Préférences d'affichage">⚙</button>
+    <button id="themeToggle" class="nav-link" type="button" aria-label="Changer le thème">☾</button>
   </nav>
 </header>
 
-<main class="shell">
+<p id="routeAnnouncer" class="sr-only" aria-live="polite" aria-atomic="true"></p>
+
+<main id="main" class="shell" tabindex="-1">
 <section id="homeView" class="view">
   <section class="hero">
     <div>
-      <p class="eyebrow">QA TRAINING · DATA.GOUV.FR</p>
-      <h1>Explore les entreprises françaises avec une vraie API publique.</h1>
-      <p class="lead">Recherche, filtres, fiches détaillées, favoris, historique et comparaison : une base moderne pour apprendre Playwright sur des données réelles.</p>
+      <p class="eyebrow" data-i18n="home.eyebrow">QA TRAINING · DATA.GOUV.FR</p>
+      <h1 data-i18n="home.title">Explore les entreprises françaises avec une vraie API publique.</h1>
+      <p class="lead" data-i18n="home.lead">Recherche, filtres, fiches détaillées, favoris, historique et comparaison : une base moderne pour apprendre Playwright sur des données réelles.</p>
       <div class="actions">
-        <button class="button" data-route="search">Commencer une recherche</button>
-        <button class="button secondary" id="randomDemoBtn">Voir un exemple</button>
+        <button class="button" type="button" data-route="search" data-i18n="home.start">Commencer une recherche</button>
+        <button class="button secondary" type="button" id="randomDemoBtn" data-i18n="home.example">Voir un exemple</button>
       </div>
     </div>
     <div class="hero-art" aria-hidden="true">
@@ -50,141 +70,327 @@
     </div>
   </section>
 
-  <section class="stats">
-    <article class="stat"><span>⌕</span><b>Recherche réelle</b><p>Connexion directe à l'API Recherche d'Entreprises.</p></article>
-    <article class="stat"><span>★</span><b>Favoris locaux</b><p>Conserve des entreprises dans le navigateur.</p></article>
-    <article class="stat"><span>⇆</span><b>Comparaison</b><p>Compare deux entreprises sur les principales données.</p></article>
+  <section class="stats stats-4">
+    <article class="stat"><span aria-hidden="true">⌕</span><b data-i18n="home.card1.title">Recherche réelle</b><p data-i18n="home.card1.text">Connexion directe à l'API Recherche d'Entreprises, filtres avancés et recherche à proximité.</p></article>
+    <article class="stat"><span aria-hidden="true">★</span><b data-i18n="home.card2.title">Favoris et veille</b><p data-i18n="home.card2.text">Notes, tags, import/export et détection des changements.</p></article>
+    <article class="stat"><span aria-hidden="true">⇆</span><b data-i18n="home.card3.title">Comparaison</b><p data-i18n="home.card3.text">Compare jusqu'à trois entreprises et partage la comparaison.</p></article>
+    <article class="stat"><span aria-hidden="true">🧪</span><b data-i18n="home.card4.title">Labo QA</b><p data-i18n="home.card4.text">Ajoute ?qa=1 à l'URL pour simuler latence, erreurs 429/500, timeouts et mode hors ligne.</p></article>
   </section>
 
-  <div class="heading"><div><p class="eyebrow">DÉMONSTRATION</p><h2>Recherches suggérées</h2></div></div>
+  <div class="heading"><div><p class="eyebrow" data-i18n="home.demoEyebrow">DÉMONSTRATION</p><h2 data-i18n="home.demoTitle">Recherches suggérées</h2></div></div>
   <div class="suggestions">
-    <button data-query="La Poste"><span>📮</span><b>La Poste</b><small>Entreprise nationale</small></button>
-    <button data-query="Renault"><span>🚗</span><b>Renault</b><small>Automobile</small></button>
-    <button data-query="Université de Strasbourg"><span>🎓</span><b>Université</b><small>Administration</small></button>
-    <button data-query="API Restauration"><span>🍽</span><b>API Restauration</b><small>Restauration</small></button>
+    <button type="button" data-query="La Poste"><span aria-hidden="true">📮</span><b>La Poste</b><small data-i18n="home.demo1">Entreprise nationale</small></button>
+    <button type="button" data-query="Renault"><span aria-hidden="true">🚗</span><b>Renault</b><small data-i18n="home.demo2">Automobile</small></button>
+    <button type="button" data-query="Université de Strasbourg"><span aria-hidden="true">🎓</span><b data-i18n="home.demo3title">Université</b><small data-i18n="home.demo3">Administration</small></button>
+    <button type="button" data-query="API Restauration"><span aria-hidden="true">🍽</span><b>API Restauration</b><small data-i18n="home.demo4">Restauration</small></button>
   </div>
 </section>
 
 <section id="searchView" class="view hidden">
   <article class="panel searchbox">
-    <p class="eyebrow">RECHERCHE</p><h2>Trouver une entreprise</h2><p class="muted">Nom, marque, SIREN ou mots-clés.</p>
-    <form id="searchForm" data-testid="search-form">
+    <p class="eyebrow" data-i18n="search.eyebrow">RECHERCHE</p><h2 data-i18n="search.title">Trouver une entreprise</h2><p class="muted" data-i18n="search.subtitle">Nom, marque, SIREN, SIRET ou mots-clés.</p>
+    <form id="searchForm" data-testid="search-form" novalidate>
       <div class="search-main">
-        <div>
-          <input
-            id="queryInput"
-            type="search"
-            aria-label="Recherche d’entreprise"
-            role="combobox"
-            aria-autocomplete="list"
-            aria-expanded="false"
-            aria-controls="companySuggestions"
-            placeholder="Ex. Renault, La Poste, 356000000..."
-            data-testid="query-input">
-          <div id="companySuggestions" class="suggestion-list hidden" role="listbox" aria-label="Suggestions d’entreprises"></div>
-          <p id="queryHint" class="input-hint"></p>
+        <div class="combobox">
+          <input id="queryInput" type="search" maxlength="120" aria-label="Recherche d’entreprise" data-i18n-attr="aria-label:search.inputLabel,placeholder:search.placeholder" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="companySuggestions" aria-describedby="queryHint identifierWarning" autocomplete="off" placeholder="Ex. Renault, La Poste, 356000000..." data-testid="query-input">
+          <div id="companySuggestions" class="suggestion-list hidden" role="listbox" aria-label="Suggestions d’entreprises" data-i18n-attr="aria-label:search.suggestionsLabel"></div>
+          <p id="queryHint" class="input-hint" data-testid="query-hint" data-state="empty"></p>
+          <p id="identifierWarning" class="input-hint warning hidden" data-testid="identifier-warning" data-i18n="search.identifierWarning">Recherche par identifiant : les filtres sont ignorés par l'API.</p>
         </div>
-        <button class="button" data-testid="search-button">Rechercher</button>
+        <button class="button" type="submit" data-testid="search-button" data-i18n="search.submit">Rechercher</button>
       </div>
-      <details class="advanced">
-        <summary>Filtres avancés</summary>
+      <details class="advanced" id="advancedFilters">
+        <summary><span data-i18n="search.advanced">Filtres avancés</span> <span id="advancedCount" class="count-badge hidden" data-testid="advanced-filters-count"></span></summary>
         <div class="filters">
-          <label>Code postal<input id="postalCodeFilter" placeholder="75015"></label>
-          <label>Commune
-            <input id="cityFilter" placeholder="Paris" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="citySuggestions" autocomplete="off">
+          <label><span data-i18n="filter.postalCode">Code postal</span><input id="postalCodeFilter" inputmode="numeric" placeholder="75015" maxlength="60"></label>
+          <label class="combobox"><span data-i18n="filter.city">Commune</span>
+            <input id="cityFilter" placeholder="Paris" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="citySuggestions" autocomplete="off" maxlength="80">
             <input id="cityCodeFilter" type="hidden">
-            <span id="citySuggestions" class="suggestion-list hidden" role="listbox" aria-label="Suggestions de communes"></span>
+            <span id="citySuggestions" class="suggestion-list hidden" role="listbox" aria-label="Suggestions de communes" data-i18n-attr="aria-label:filter.citySuggestions"></span>
           </label>
-          <label>Code NAF<input id="nafFilter" placeholder="56.10A" maxlength="6"></label>
-          <label>Département<input id="departmentFilter" placeholder="75" maxlength="3"></label>
-          <label>Région<input id="regionFilter" placeholder="11" maxlength="2"></label>
-          <label>Tranche d’effectif
-            <select id="workforceFilter">
-              <option value="">Toutes</option><option value="NN">Non renseigné</option><option value="00">0 salarié</option>
-              <option value="01">1–2</option><option value="02">3–5</option><option value="03">6–9</option>
-              <option value="11">10–19</option><option value="12">20–49</option><option value="21">50–99</option>
-              <option value="22">100–199</option><option value="31">200–249</option><option value="32">250–499</option>
-              <option value="41">500–999</option><option value="42">1 000–1 999</option><option value="51">2 000–4 999</option><option value="52">5 000–9 999</option><option value="53">10 000 et plus</option>
-            </select>
-          </label>
-          <label>État<select id="statusFilter"><option value="">Tous</option><option value="A">En activité</option><option value="C">Cessée</option></select></label>
-          <label>Résultats / page<select id="pageSizeFilter"><option>10</option><option selected>20</option><option>25</option></select></label>
+          <label><span data-i18n="filter.naf">Code NAF</span><input id="nafFilter" placeholder="56.10A" maxlength="6"></label>
+          <label><span data-i18n="filter.department">Département</span><input id="departmentFilter" placeholder="75" maxlength="3"></label>
+          <label><span data-i18n="filter.region">Région</span><input id="regionFilter" placeholder="11" maxlength="2" inputmode="numeric"></label>
+          <label><span data-i18n="filter.workforce">Tranche d’effectif</span><select id="workforceFilter"></select></label>
+          <label><span data-i18n="filter.status">État</span><select id="statusFilter"><option value="" data-i18n="filter.all">Tous</option><option value="A" data-i18n="status.active">En activité</option><option value="C" data-i18n="status.closed">Cessée</option></select></label>
+          <label><span data-i18n="filter.pageSize">Résultats / page</span><select id="pageSizeFilter"><option>10</option><option selected>20</option><option>25</option></select></label>
+          <label><span data-i18n="filter.category">Catégorie</span><select id="categoryFilter" data-testid="filter-category"></select></label>
+          <label><span data-i18n="filter.legalForm">Forme juridique</span><select id="legalFormFilter" data-testid="filter-legal-form"></select></label>
+          <label class="span-2"><span data-i18n="filter.section">Secteur (section NAF)</span><select id="sectionFilter" data-testid="filter-section"></select></label>
+          <label><span data-i18n="filter.revenueMin">CA min (€)</span><input id="revenueMinFilter" inputmode="numeric" maxlength="16" data-testid="filter-revenue-min"></label>
+          <label><span data-i18n="filter.revenueMax">CA max (€)</span><input id="revenueMaxFilter" inputmode="numeric" maxlength="16" data-testid="filter-revenue-max"></label>
+          <label><span data-i18n="filter.netMin">Résultat net min (€)</span><input id="netMinFilter" inputmode="numeric" maxlength="16" data-testid="filter-net-min"></label>
+          <label><span data-i18n="filter.netMax">Résultat net max (€)</span><input id="netMaxFilter" inputmode="numeric" maxlength="16" data-testid="filter-net-max"></label>
+          <label><span data-i18n="filter.personName">Nom du dirigeant</span><input id="personNameFilter" maxlength="60" autocomplete="off" data-testid="filter-person"></label>
+          <label><span data-i18n="filter.personFirstNames">Prénom(s) du dirigeant</span><input id="personFirstNamesFilter" maxlength="60" autocomplete="off" data-testid="filter-person-first-names"></label>
+          <fieldset class="label-filters span-all" data-testid="filter-labels"><legend data-i18n="filter.labels">Labels et statuts</legend><div id="labelFilters" class="checkbox-grid"></div></fieldset>
         </div>
       </details>
     </form>
   </article>
 
   <div class="heading">
-    <div><p class="eyebrow">RÉSULTATS</p><h2 id="resultsTitle">Entreprises</h2></div>
-    <div class="actions"><span
-  id="resultCount"
-  class="pill"
-  role="status"
-  aria-live="polite"
-  aria-atomic="true">
-  0 résultat
-</span><button id="clearSearchBtn" class="button secondary">Réinitialiser</button></div>
+    <div><p class="eyebrow" data-i18n="results.eyebrow">RÉSULTATS</p><h2 id="resultsTitle">Entreprises</h2></div>
+    <div class="actions"><span id="resultCount" class="pill" role="status" aria-live="polite" aria-atomic="true">0 résultat</span><button id="clearSearchBtn" type="button" class="button secondary" data-i18n="results.reset">Réinitialiser</button></div>
   </div>
-  
-  <section class="toolbar panel">
+
+  <section class="toolbar panel" data-i18n-attr="aria-label:results.toolbar" aria-label="Outils de résultats">
     <div class="toolbar-group">
-      <label>Trier par
+      <label><span data-i18n="results.sortBy">Trier par</span>
         <select id="sortSelect" data-testid="sort-select">
-          <option value="relevance">Pertinence</option>
-          <option value="name-asc">Nom A → Z</option>
-          <option value="name-desc">Nom Z → A</option>
-          <option value="creation-newest">Création récente</option>
-          <option value="creation-oldest">Création ancienne</option>
-          <option value="status">Statut</option>
+          <option value="relevance" data-i18n="sort.relevance">Pertinence</option>
+          <option value="name-asc" data-i18n="sort.name-asc">Nom A → Z</option>
+          <option value="name-desc" data-i18n="sort.name-desc">Nom Z → A</option>
+          <option value="creation-newest" data-i18n="sort.creation-newest">Création récente</option>
+          <option value="creation-oldest" data-i18n="sort.creation-oldest">Création ancienne</option>
+          <option value="status" data-i18n="sort.status">Statut</option>
         </select>
       </label>
-      <button id="saveSearchBtn" class="button secondary">Sauvegarder la recherche</button>
-      <button id="shareSearchBtn" class="button secondary">Copier le lien de cette recherche</button>
+      <label><span data-i18n="results.localFilter">Filtrer dans ces résultats</span><input id="localFilterInput" type="search" maxlength="60" data-testid="local-filter" autocomplete="off"></label>
+      <button id="viewToggleBtn" type="button" class="button secondary" aria-pressed="false" data-testid="view-toggle" data-i18n="results.tableView">Vue tableau</button>
     </div>
     <div class="toolbar-group">
-      <button id="openExportBtn" class="button secondary">Configurer l’export</button>
+      <button id="saveSearchBtn" type="button" class="button secondary" data-i18n="results.save">Sauvegarder la recherche</button>
+      <button id="shareSearchBtn" type="button" class="button secondary" data-i18n="results.share">Copier le lien de cette recherche</button>
+      <button id="analyticsBtn" type="button" class="button secondary" aria-expanded="false" aria-controls="analyticsPanel" data-testid="analytics-toggle" data-i18n="results.analytics">Analyser</button>
+      <button id="openExportBtn" type="button" class="button secondary" data-i18n="results.export">Configurer l’export</button>
     </div>
+  </section>
+
+  <p id="localFilterStatus" class="sr-only" aria-live="polite"></p>
+  <section id="analyticsPanel" class="analytics hidden" data-testid="analytics-panel" aria-labelledby="analyticsTitle">
+    <div class="heading compact"><h3 id="analyticsTitle" data-i18n="analytics.title">Analyse des résultats</h3>
+      <div class="toolbar-group">
+        <label><span data-i18n="analytics.pages">Pages analysées</span><select id="analyticsPages" data-testid="analytics-pages"><option>1</option><option>2</option><option>3</option><option>4</option></select></label>
+        <button id="analyticsRunBtn" type="button" class="button" data-i18n="analytics.run">Lancer l’analyse</button>
+        <button id="analyticsCancelBtn" type="button" class="button secondary hidden" data-testid="analytics-cancel" data-i18n="common.cancel">Annuler</button>
+      </div>
+    </div>
+    <progress id="analyticsProgress" class="hidden" max="1" value="0" data-testid="analytics-progress"></progress>
+    <p id="analyticsStatus" class="muted" role="status"></p>
+    <div id="analyticsCharts" class="charts-grid"></div>
   </section>
 
   <section id="statsPanel" class="result-stats hidden" data-testid="results-stats"></section>
   <div id="activeFilters" class="active-filters hidden" data-testid="active-filters"></div>
-<div id="searchState" class="state"></div>
-
+  <div class="state-wrap">
+    <div id="searchState" class="state" data-testid="search-state"></div>
+    <button id="retryBtn" type="button" class="button hidden" data-testid="error-retry" data-i18n="common.retry">Réessayer</button>
+  </div>
   <div id="resultsGrid" class="company-grid" data-testid="results-grid"></div>
-  <div id="pagination" class="pagination hidden"><button id="prevPage" class="button secondary">← Précédent</button><span id="pageLabel" class="pill">Page 1</span><button id="nextPage" class="button secondary">Suivant →</button></div>
+  <div id="resultsTable" class="table-scroll hidden" tabindex="0" data-testid="results-table" data-i18n-attr="aria-label:results.tableLabel" aria-label="Résultats en tableau"></div>
+  <div id="pagination" class="pagination hidden"><button id="prevPage" type="button" class="button secondary" data-i18n="pagination.prev">← Précédent</button><span id="pageLabel" class="pill">Page 1</span><button id="nextPage" type="button" class="button secondary" data-i18n="pagination.next">Suivant →</button></div>
 </section>
 
 <section id="detailView" class="view hidden">
-  <button class="button secondary" data-route="search">← Retour aux résultats</button>
+  <button class="button secondary" type="button" data-route="search" data-i18n="detail.back">← Retour aux résultats</button>
   <div id="detailRoot"></div>
 </section>
 
 <section id="favoritesView" class="view hidden">
-  <div class="heading"><div><p class="eyebrow">COLLECTION</p><h2>Mes favoris</h2></div><button id="clearFavoritesBtn" class="button secondary">Tout supprimer</button></div>
+  <div class="heading"><div><p class="eyebrow" data-i18n="favorites.eyebrow">COLLECTION</p><h2 data-i18n="favorites.title">Mes favoris</h2></div><button id="clearFavoritesBtn" type="button" class="button secondary" data-i18n="favorites.clear">Tout supprimer</button></div>
+  <section class="toolbar panel" data-i18n-attr="aria-label:favorites.toolbar" aria-label="Outils des favoris">
+    <div class="toolbar-group">
+      <label><span data-i18n="favorites.search">Rechercher</span><input id="favoritesSearch" type="search" maxlength="60" data-testid="favorites-search" autocomplete="off"></label>
+      <label><span data-i18n="favorites.tag">Tag</span><select id="favoritesTagFilter" data-testid="favorites-tag-filter"></select></label>
+      <label><span data-i18n="favorites.sort">Trier</span><select id="favoritesSort" data-testid="favorites-sort"><option value="added" data-i18n="favorites.sortAdded">Date d’ajout</option><option value="name" data-i18n="favorites.sortName">Nom</option><option value="changed" data-i18n="favorites.sortChanged">Modifiés d’abord</option></select></label>
+    </div>
+    <div class="toolbar-group">
+      <button id="favoritesRefreshBtn" type="button" class="button secondary" data-testid="favorites-refresh" data-i18n="favorites.refreshAll">Actualiser tout</button>
+      <button id="favoritesRefreshCancelBtn" type="button" class="button secondary hidden" data-testid="favorites-refresh-cancel" data-i18n="common.cancel">Annuler</button>
+      <button id="favoritesExportBtn" type="button" class="button secondary" data-testid="favorites-export" data-i18n="favorites.export">Exporter (JSON)</button>
+      <label><span data-i18n="favorites.importMode">Mode d’import</span><select id="favoritesImportMode" data-testid="favorites-import-mode"><option value="merge" data-i18n="favorites.merge">Fusionner</option><option value="replace" data-i18n="favorites.replace">Remplacer</option></select></label>
+      <label class="button secondary file-button"><span data-i18n="favorites.import">Importer…</span><input id="favoritesImportInput" class="sr-only" type="file" accept="application/json,.json" data-testid="favorites-import"></label>
+    </div>
+  </section>
+  <progress id="favoritesProgress" class="hidden" max="1" value="0" data-testid="favorites-progress"></progress>
+  <p id="favoritesStatus" class="muted" role="status"></p>
   <div id="favoritesGrid" class="company-grid"></div>
 </section>
 
 <section id="compareView" class="view hidden">
-  <div class="heading"><div><p class="eyebrow">ANALYSE</p><h2>Comparer jusqu’à trois entreprises</h2></div></div>
+  <div class="heading"><div><p class="eyebrow" data-i18n="compare.eyebrow">ANALYSE</p><h2 data-i18n="compare.title">Comparer jusqu’à trois entreprises</h2></div>
+    <div class="toolbar-group">
+      <label class="inline-check"><input id="compareDiffOnly" type="checkbox" data-testid="compare-diff-only"><span data-i18n="compare.diffOnly">Afficher uniquement les différences</span></label>
+      <button id="compareShareBtn" type="button" class="button secondary" data-testid="compare-share" data-i18n="compare.share">Copier le lien de la comparaison</button>
+    </div>
+  </div>
   <div id="compareRoot"></div>
 </section>
 
 <section id="historyView" class="view hidden">
-  <div class="heading"><div><p class="eyebrow">LOCAL</p><h2>Historique de recherche</h2></div><button id="clearHistoryBtn" class="button secondary">Effacer</button></div>
-  <div class="detail-grid"><section><p class="eyebrow">HISTORIQUE</p><div id="historyList" class="history"></div></section><section><p class="eyebrow">RECHERCHES SAUVEGARDÉES</p><div id="savedSearchesList" class="history"></div></section></div>
+  <div class="heading"><div><p class="eyebrow" data-i18n="history.eyebrow">LOCAL</p><h2 data-i18n="history.title">Historique de recherche</h2></div><button id="clearHistoryBtn" type="button" class="button secondary" data-i18n="history.clear">Effacer</button></div>
+  <div class="detail-grid"><section><p class="eyebrow" data-i18n="history.recent">HISTORIQUE</p><div id="historyList" class="history"></div></section><section><p class="eyebrow" data-i18n="history.saved">RECHERCHES SAUVEGARDÉES</p><div id="savedSearchesList" class="history"></div></section></div>
+</section>
+
+<section id="nearbyView" class="view hidden">
+  <article class="panel searchbox">
+    <p class="eyebrow" data-i18n="nearby.eyebrow">GÉOLOCALISATION</p><h2 data-i18n="nearby.title">Entreprises à proximité</h2>
+    <p class="muted" data-i18n="nearby.privacy">Ta position n’est demandée qu’au clic, arrondie à environ 1 km et jamais enregistrée.</p>
+    <form id="nearbyForm" data-testid="nearby-form" novalidate>
+      <div class="filters">
+        <label class="combobox span-2"><span data-i18n="nearby.place">Commune de référence</span>
+          <input id="nearbyPlaceInput" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="nearbyPlaceSuggestions" autocomplete="off" maxlength="80" data-testid="nearby-place">
+          <span id="nearbyPlaceSuggestions" class="suggestion-list hidden" role="listbox" data-i18n-attr="aria-label:filter.citySuggestions" aria-label="Suggestions de communes"></span>
+        </label>
+        <div class="span-2 nearby-location"><button id="nearbyLocateBtn" type="button" class="button secondary" data-testid="nearby-use-location" data-i18n="nearby.useLocation">Utiliser ma position</button><span id="nearbyPoint" class="muted" data-testid="nearby-point"></span></div>
+        <label><span data-i18n="nearby.radius">Rayon (km)</span><input id="nearbyRadius" type="number" min="1" max="50" step="1" value="5" data-testid="nearby-radius"></label>
+        <label><span data-i18n="filter.section">Secteur (section NAF)</span><select id="nearbySection"></select></label>
+        <label><span data-i18n="filter.naf">Code NAF</span><input id="nearbyNaf" maxlength="6" placeholder="56.10A"></label>
+        <div class="form-submit"><button class="button" type="submit" data-testid="nearby-submit" data-i18n="nearby.submit">Chercher autour</button></div>
+      </div>
+    </form>
+  </article>
+  <div class="heading"><div><p class="eyebrow" data-i18n="results.eyebrow">RÉSULTATS</p><h2 id="nearbyTitle" data-i18n="nearby.resultsTitle">Autour du point choisi</h2></div><span id="nearbyCount" class="pill" role="status" aria-live="polite"></span></div>
+  <div id="nearbyState" class="state" data-testid="nearby-state"></div>
+  <div id="nearbyGrid" class="company-grid" data-testid="nearby-grid"></div>
+  <div id="nearbyPagination" class="pagination hidden"><button id="nearbyPrev" type="button" class="button secondary" data-i18n="pagination.prev">← Précédent</button><span id="nearbyPageLabel" class="pill"></span><button id="nearbyNext" type="button" class="button secondary" data-i18n="pagination.next">Suivant →</button></div>
+</section>
+
+<section id="aboutView" class="view hidden">
+  <div class="heading"><div><p class="eyebrow" data-i18n="about.eyebrow">À PROPOS</p><h2 data-i18n="about.title">À propos et nouveautés</h2></div></div>
+  <div class="detail-grid">
+    <article class="panel detail-section"><p class="eyebrow" data-i18n="about.version">VERSION</p><dl class="definition" id="aboutVersion" data-testid="about-version"></dl></article>
+    <article class="panel detail-section"><p class="eyebrow" data-i18n="about.apis">ÉTAT DES API</p><div id="aboutApiStatus" data-testid="about-api-status"></div><button id="aboutApiCheckBtn" type="button" class="button secondary" data-i18n="about.check">Tester les API</button></article>
+    <article class="panel detail-section span-all"><p class="eyebrow" data-i18n="about.news">NOUVEAUTÉS</p><ul id="aboutNews" class="news-list"></ul></article>
+    <article class="panel detail-section span-all"><p class="eyebrow" data-i18n="about.sources">SOURCES ET LICENCES</p><ul class="news-list">
+      <li><a class="official-link" href="https://recherche-entreprises.api.gouv.fr/docs/" target="_blank" rel="noopener noreferrer">API Recherche d’Entreprises ↗</a></li>
+      <li><a class="official-link" href="https://geo.api.gouv.fr/" target="_blank" rel="noopener noreferrer">API Découpage administratif ↗</a></li>
+      <li><a class="official-link" href="https://github.com/maximejoannis/french-companies-explorer-qa" target="_blank" rel="noopener noreferrer">GitHub ↗</a></li>
+      <li><button type="button" class="link-button" data-route="privacy" data-i18n="about.privacyLink">Confidentialité et mentions légales</button></li>
+      <li data-i18n="about.licence">Code sous licence MIT (voir LICENSE, avec un avis sur les données et le RGPD). Police Poppins sous licence SIL OFL 1.1.</li>
+    </ul></article>
+  </div>
+</section>
+<section id="privacyView" class="view hidden">
+  <div class="heading"><div><p class="eyebrow" data-i18n="privacy.eyebrow">CONFIDENTIALITÉ</p><h2 data-i18n="privacy.title">Confidentialité et données personnelles</h2></div></div>
+  <div class="detail-grid">
+    <article class="panel detail-section span-all" data-testid="privacy-summary"><p class="eyebrow" data-i18n="privacy.summaryTitle">EN BREF</p>
+      <ul class="news-list">
+        <li data-i18n="privacy.summary1">Aucun compte, aucun cookie, aucun outil de mesure d’audience ni traceur publicitaire.</li>
+        <li data-i18n="privacy.summary2">Tes favoris, ton historique et tes préférences restent dans ce navigateur : aucune copie n’existe sur un serveur.</li>
+        <li data-i18n="privacy.summary3">Tes recherches sont envoyées aux API publiques de l’État pour obtenir les résultats.</li>
+        <li data-i18n="privacy.summary4">Tu peux exporter ou effacer tes données à tout moment depuis cette page.</li>
+      </ul>
+    </article>
+    <article class="panel detail-section span-all"><p class="eyebrow" data-i18n="privacy.myData">MES DONNÉES DANS CE NAVIGATEUR</p>
+      <p class="muted" data-i18n="privacy.myDataHelp">Inventaire en temps réel du stockage local utilisé par l’application.</p>
+      <div id="privacyInventory" class="table-scroll"></div>
+      <div class="actions">
+        <button id="privacyExportBtn" type="button" class="button secondary" data-testid="privacy-export" data-i18n="privacy.export">Exporter mes données (JSON)</button>
+        <button id="privacyEraseAllBtn" type="button" class="button danger" data-testid="privacy-erase-all" data-i18n="privacy.eraseAll">Effacer toutes mes données</button>
+      </div>
+      <p id="privacyStatus" class="muted" role="status" data-testid="privacy-status"></p>
+    </article>
+    <article class="panel detail-section"><p class="eyebrow" data-i18n="privacy.settings">RÉGLAGES</p>
+      <label><span data-i18n="privacy.retention">Durée de conservation de l’historique</span><select id="privacyRetention" data-testid="privacy-retention"></select></label>
+      <p class="muted small" data-i18n="privacy.retentionHelp">Les recherches plus anciennes sont supprimées automatiquement à chaque chargement.</p>
+      <label class="inline-check"><input id="privacyMinimize" type="checkbox" data-testid="privacy-minimize"><span data-i18n="privacy.minimize">Ne pas enregistrer le nom et l’adresse des entrepreneurs individuels</span></label>
+      <p class="muted small" data-i18n="privacy.minimizeHelp">Pour un entrepreneur individuel, le nom de l’entreprise est celui d’une personne. Les entreprises en diffusion partielle ne sont jamais enregistrées avec leur nom.</p>
+    </article>
+    <article class="panel detail-section"><p class="eyebrow" data-i18n="privacy.rights">TES DROITS</p>
+      <ul class="news-list">
+        <li data-i18n="privacy.rightAccess">Accès et portabilité : bouton « Exporter mes données ».</li>
+        <li data-i18n="privacy.rightErase">Effacement : par catégorie ou en totalité, immédiatement et sans justification.</li>
+        <li data-i18n="privacy.rightThird">Données des entreprises : elles proviennent des registres publics. Une personne peut demander à l’INSEE la diffusion partielle de ses données ; l’application respecte ce statut.</li>
+        <li data-i18n="privacy.rightCnil">Réclamation : tu peux saisir la CNIL (cnil.fr).</li>
+      </ul>
+    </article>
+    <article class="panel detail-section span-all"><p class="eyebrow" data-i18n="privacy.recipients">DONNÉES TRANSMISES</p>
+      <div class="table-scroll"><table class="compare-table" data-testid="privacy-recipients">
+        <thead><tr><th scope="col" data-i18n="privacy.recipient">Destinataire</th><th scope="col" data-i18n="privacy.what">Données</th><th scope="col" data-i18n="privacy.when">Quand</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">API Recherche d’Entreprises (DINUM)</th><td data-i18n="privacy.r1what">Termes et filtres de recherche, coordonnées arrondies (proximité), adresse IP</td><td data-i18n="privacy.r1when">À chaque recherche</td></tr>
+          <tr><th scope="row">API Découpage administratif (DINUM)</th><td data-i18n="privacy.r2what">Nom de commune saisi, adresse IP</td><td data-i18n="privacy.r2when">Autocomplétion des communes</td></tr>
+          <tr><th scope="row">GitHub Pages (GitHub, Inc.)</th><td data-i18n="privacy.r3what">Adresse IP, navigateur (journaux de l’hébergeur)</td><td data-i18n="privacy.r3when">Au chargement du site</td></tr>
+          <tr><th scope="row">OpenStreetMap / Annuaire des Entreprises</th><td data-i18n="privacy.r4what">Adresse IP, page consultée</td><td data-i18n="privacy.r4when">Uniquement si tu cliques sur un lien externe</td></tr>
+        </tbody>
+      </table></div>
+    </article>
+    <article class="panel detail-section span-all" data-testid="privacy-legal"><p class="eyebrow" data-i18n="privacy.legal">MENTIONS LÉGALES</p>
+      <dl class="definition">
+        <div><dt data-i18n="privacy.publisher">Éditeur</dt><dd data-i18n="privacy.publisherValue">Maxime Joannis — projet personnel, non commercial, d’entraînement à l’assurance qualité.</dd></div>
+        <div><dt data-i18n="privacy.contact">Contact</dt><dd><a class="official-link" href="https://github.com/maximejoannis/french-companies-explorer-qa/issues" target="_blank" rel="noopener noreferrer" data-i18n="privacy.contactValue">Tickets GitHub du projet ↗</a></dd></div>
+        <div><dt data-i18n="privacy.host">Hébergeur</dt><dd>GitHub, Inc., 88 Colin P. Kelly Jr. Street, San Francisco, CA 94107, États-Unis</dd></div>
+        <div><dt data-i18n="privacy.licence">Licence</dt><dd><a class="official-link" href="./LICENSE" target="_blank" rel="noopener" data-testid="privacy-license-link" data-i18n="privacy.licenceValue">Licence MIT et avis sur les données ↗</a> · <a class="official-link" href="./PRIVACY.md" target="_blank" rel="noopener" data-i18n="privacy.policyLink">Politique de confidentialité complète ↗</a></dd></div>
+      </dl>
+    </article>
+  </div>
 </section>
 </main>
 
-<dialog id="exportDialog" aria-labelledby="exportDialogTitle">
+<footer class="site-footer">
+  <button type="button" class="link-button" data-route="privacy" data-testid="footer-privacy" data-i18n="footer.privacy">Confidentialité</button>
+  <a class="link-button" href="./LICENSE" target="_blank" rel="noopener" data-testid="footer-license" data-i18n="footer.license">Licence</a>
+  <button type="button" class="link-button" data-route="about" data-i18n="footer.about">À propos</button>
+  <span class="muted" data-i18n="footer.noTracking">Aucun cookie · aucun traceur</span>
+</footer>
+
+<dialog id="eraseDialog" aria-labelledby="eraseDialogTitle" data-testid="erase-dialog">
   <form method="dialog" class="export-form">
-    <h2 id="exportDialogTitle">Configurer l’export</h2>
-    <label>Format<select id="exportFormat"><option value="csv">CSV</option><option value="json">JSON</option></select></label>
-    <label>Périmètre<select id="exportScope"><option value="results">Résultats de la page courante</option><option value="compare">Entreprises comparées</option></select></label>
-    <p id="exportHelp" class="muted">L’export est disponible après une recherche réussie.</p>
-    <div class="actions"><button value="cancel" class="button secondary">Annuler</button><button id="confirmExportBtn" value="default" class="button">Télécharger</button></div>
+    <h2 id="eraseDialogTitle" data-i18n="privacy.eraseTitle">Effacer toutes mes données ?</h2>
+    <p data-i18n="privacy.eraseText">Favoris, notes, tags, comparaison, historique, recherches sauvegardées, préférences, données de la version 1 et cache hors ligne seront supprimés de ce navigateur. Cette action est irréversible.</p>
+    <label class="inline-check"><input id="eraseAck" type="checkbox" data-testid="erase-ack"><span data-i18n="privacy.eraseAck">Je comprends que cette action est définitive.</span></label>
+    <div class="actions"><button value="cancel" class="button secondary" data-testid="erase-cancel" data-i18n="common.cancel">Annuler</button><button id="eraseConfirmBtn" value="erase" class="button danger" disabled data-testid="erase-confirm" data-i18n="privacy.eraseConfirm">Tout effacer</button></div>
   </form>
 </dialog>
+
+<dialog id="exportDialog" aria-labelledby="exportDialogTitle">
+  <form method="dialog" class="export-form">
+    <h2 id="exportDialogTitle" data-i18n="export.title">Configurer l’export</h2>
+    <label><span data-i18n="export.format">Format</span><select id="exportFormat"><option value="csv">CSV</option><option value="json">JSON</option></select></label>
+    <label><span data-i18n="export.scope">Périmètre</span><select id="exportScope">
+      <option value="results" data-i18n="export.scopeResults">Résultats de la page courante</option>
+      <option value="all-pages" data-i18n="export.scopeAll">Toutes les pages (500 lignes max)</option>
+      <option value="compare" data-i18n="export.scopeCompare">Entreprises comparées</option>
+      <option value="favorites" data-i18n="export.scopeFavorites">Favoris (avec notes et tags)</option>
+    </select></label>
+    <fieldset data-testid="export-columns"><legend data-i18n="export.columns">Colonnes</legend><div id="exportColumns" class="checkbox-grid"></div></fieldset>
+    <p id="exportPersonalWarning" class="warning hidden" role="alert" data-i18n="export.personalWarning">Attention : la colonne « Dirigeants » contient des données personnelles. N’exporte ces données que pour un usage légitime et ne les conserve pas plus que nécessaire.</p>
+    <progress id="exportProgress" class="hidden" max="1" value="0" data-testid="export-progress"></progress>
+    <p id="exportHelp" class="muted" role="status">L’export est disponible après une recherche réussie.</p>
+    <div class="actions"><button value="cancel" class="button secondary" id="exportCancelBtn" data-i18n="common.cancel">Annuler</button><button id="confirmExportBtn" value="default" class="button" data-testid="export-confirm" data-i18n="export.download">Télécharger</button></div>
+  </form>
+</dialog>
+
+<dialog id="saveSearchDialog" aria-labelledby="saveSearchTitle" data-testid="save-search-dialog">
+  <form method="dialog" class="export-form" id="saveSearchForm">
+    <h2 id="saveSearchTitle" data-i18n="save.title">Sauvegarder la recherche</h2>
+    <label><span data-i18n="save.name">Nom de la recherche</span><input id="saveSearchName" maxlength="80" required data-testid="save-search-name"></label>
+    <p id="saveSearchError" class="input-hint invalid hidden" role="alert"></p>
+    <div class="actions"><button value="cancel" class="button secondary" formnovalidate data-i18n="common.cancel">Annuler</button><button id="saveSearchConfirm" value="save" class="button" data-testid="save-search-confirm" data-i18n="save.confirm">Enregistrer</button></div>
+  </form>
+</dialog>
+
+<dialog id="preferencesDialog" aria-labelledby="preferencesTitle" data-testid="preferences-dialog">
+  <form method="dialog" class="export-form">
+    <h2 id="preferencesTitle" data-i18n="prefs.title">Préférences d’affichage</h2>
+    <label><span data-i18n="prefs.theme">Thème</span><select id="prefTheme" data-testid="pref-theme"><option value="system" data-i18n="prefs.system">Système</option><option value="light" data-i18n="prefs.light">Clair</option><option value="dark" data-i18n="prefs.dark">Sombre</option></select></label>
+    <label><span data-i18n="prefs.contrast">Contraste</span><select id="prefContrast" data-testid="pref-contrast"><option value="normal" data-i18n="prefs.normal">Normal</option><option value="high" data-i18n="prefs.high">Renforcé</option></select></label>
+    <label><span data-i18n="prefs.density">Densité</span><select id="prefDensity" data-testid="pref-density"><option value="comfortable" data-i18n="prefs.comfortable">Confortable</option><option value="compact" data-i18n="prefs.compact">Compacte</option></select></label>
+    <label><span data-i18n="prefs.motion">Animations</span><select id="prefMotion" data-testid="pref-motion"><option value="system" data-i18n="prefs.system">Système</option><option value="reduced" data-i18n="prefs.reduced">Réduites</option></select></label>
+    <label><span data-i18n="prefs.fontScale">Taille du texte</span><select id="prefFontScale" data-testid="pref-font-scale"><option value="100">100 %</option><option value="112">112 %</option><option value="125">125 %</option></select></label>
+    <label><span data-i18n="prefs.lang">Langue</span><select id="prefLang" data-testid="pref-lang"><option value="" data-i18n="prefs.auto">Par défaut (français)</option><option value="fr">Français</option><option value="en">English</option></select></label>
+    <label class="inline-check"><input id="prefShortcuts" type="checkbox" data-testid="pref-shortcuts"><span data-i18n="prefs.shortcuts">Activer les raccourcis clavier à une touche</span></label>
+    <div class="actions"><button type="button" id="openShortcutsBtn" class="button secondary" data-i18n="prefs.showShortcuts">Voir les raccourcis</button><button value="close" class="button" data-i18n="common.close">Fermer</button></div>
+  </form>
+</dialog>
+
+<dialog id="shortcutsDialog" aria-labelledby="shortcutsTitle" data-testid="shortcuts-dialog">
+  <form method="dialog" class="export-form">
+    <h2 id="shortcutsTitle" data-i18n="shortcuts.title">Raccourcis clavier</h2>
+    <dl class="definition shortcuts-list">
+      <div><dt><kbd>/</kbd></dt><dd data-i18n="shortcuts.search">Aller au champ de recherche</dd></div>
+      <div><dt><kbd>?</kbd></dt><dd data-i18n="shortcuts.help">Afficher cette aide</dd></div>
+      <div><dt><kbd>g</kbd> puis <kbd>s</kbd> / <kbd>f</kbd> / <kbd>c</kbd> / <kbd>h</kbd> / <kbd>n</kbd> / <kbd>a</kbd> / <kbd>p</kbd> / <kbd>o</kbd></dt><dd data-i18n="shortcuts.go">Recherche, favoris, comparaison, historique, proximité, à propos, confidentialité, accueil</dd></div>
+      <div><dt><kbd>Échap</kbd></dt><dd data-i18n="shortcuts.escape">Fermer une fenêtre ou une liste de suggestions</dd></div>
+    </dl>
+    <p class="muted" data-i18n="shortcuts.disable">Les raccourcis à une touche peuvent être désactivés dans les préférences.</p>
+    <div class="actions"><button value="close" class="button" data-i18n="common.close">Fermer</button></div>
+  </form>
+</dialog>
+
 <div id="toast" class="toast hidden" role="status" aria-live="polite" aria-atomic="true"></div>
-<script src="./app.js"></script>
+<noscript><p class="state">Cette application nécessite JavaScript.</p></noscript>
 </body>
 </html>

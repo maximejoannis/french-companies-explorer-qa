@@ -1,0 +1,71 @@
+MIT License
+
+Copyright (c) 2026 Maxime Joannis
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+================================================================================
+AVIS COMPLÉMENTAIRE — DONNÉES ET RGPD
+(information ; ce texte ne modifie pas la licence MIT ci-dessus)
+================================================================================
+
+1. Périmètre de la licence
+   La licence MIT couvre uniquement le code source et la documentation de ce
+   dépôt. Elle ne s'applique PAS aux données affichées par l'application, qui
+   proviennent de services tiers et restent soumises à leurs propres conditions.
+
+2. Données des entreprises
+   Les données sont obtenues à l'exécution auprès de l'API Recherche
+   d'Entreprises (DINUM), qui agrège notamment la base Sirene (INSEE) et le
+   Registre national des entreprises (INPI), ainsi qu'auprès de l'API
+   Découpage administratif. Consultez les conditions de réutilisation de
+   chaque source avant toute réutilisation de ces données.
+
+3. Données à caractère personnel
+   Ces données contiennent des données personnelles au sens du Règlement
+   (UE) 2016/679 (RGPD) : noms des entrepreneurs individuels, dirigeants,
+   adresses. Leur caractère public ne retire pas cette qualification.
+   Toute personne qui réutilise ce code pour collecter, stocker, publier ou
+   redistribuer ces données (fork, déploiement, export, scraping…) devient
+   responsable de son propre traitement et doit notamment :
+     - définir une finalité légitime et une base légale ;
+     - minimiser les données traitées et limiter leur durée de conservation ;
+     - respecter les oppositions à la diffusion (statut de diffusion « P » de
+       la base Sirene) et tenir les données à jour ;
+     - informer les personnes et permettre l'exercice de leurs droits
+       (accès, rectification, effacement, opposition).
+   Les garde-fous intégrés à l'application (dirigeants et géolocalisation
+   jamais enregistrés, minimisation des entrepreneurs individuels et des
+   unités en diffusion partielle, conservation limitée, effacement et export
+   des données locales) sont décrits dans PRIVACY.md. Ils ne constituent pas
+   une garantie de conformité pour un usage dérivé.
+
+4. Données du Labo QA
+   Les entreprises, dirigeants et SIREN de src/qa-lab/fixtures.js sont
+   entièrement fictifs (plage 9000000xx). Toute ressemblance avec une
+   entreprise ou une personne réelle serait fortuite. Ils peuvent être
+   réutilisés librement selon la licence MIT.
+
+5. Composants tiers
+   La police Poppins (assets/fonts/) est distribuée sous licence SIL Open
+   Font License 1.1 : voir assets/fonts/OFL-LICENSE.txt.
+
+6. Absence de garantie
+   Conformément à la licence MIT, le logiciel est fourni « en l'état ».
+   Cet avis est informatif et ne constitue pas un conseil juridique.
