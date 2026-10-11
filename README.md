@@ -44,7 +44,7 @@ npm start          # http://localhost:4173/
 
 Ouvrir directement `index.html` en `file://` ne fonctionne pas (modules ES) : utiliser `npm start` ou tout serveur statique.
 
-> `.npmrc` active `legacy-peer-deps` pour contourner une erreur de résolution de npm 10 sur les dépendances optionnelles de Vite 8 (utilisé par Vitest). Aucune dépendance n'est livrée au navigateur.
+> Aucune dépendance n'est livrée au navigateur : tout ce que contient `package.json` sert au développement.
 
 ## Scripts
 
