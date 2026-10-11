@@ -1,0 +1,39 @@
+{
+    "name": "french-companies-explorer-qa",
+    "version": "2.1.0",
+    "private": true,
+    "description": "Application d'entraînement QA : recherche d'entreprises françaises via l'API Recherche d'Entreprises (data.gouv.fr).",
+    "type": "module",
+    "license": "MIT",
+    "engines": {
+        "node": ">=20"
+    },
+    "scripts": {
+        "start": "node scripts/serve.mjs",
+        "lint": "eslint .",
+        "format": "prettier --write \"**/*.{js,mjs,json}\"",
+        "format:check": "prettier --check \"**/*.{js,mjs,json}\"",
+        "typecheck": "tsc --noEmit -p tsconfig.json",
+        "test": "vitest run",
+        "test:watch": "vitest",
+        "coverage": "vitest run --coverage",
+        "check": "npm run lint && npm run format:check && npm run typecheck && npm run coverage",
+        "version:file": "node scripts/write-version.mjs",
+        "fonts": "node scripts/copy-fonts.mjs",
+        "smoke": "node scripts/smoke.mjs",
+        "build:site": "node scripts/build-site.mjs"
+    },
+    "devDependencies": {
+        "@eslint/js": "9.32.0",
+        "@fontsource/poppins": "5.2.6",
+        "@vitest/coverage-v8": "4.1.11",
+        "eslint": "9.32.0",
+        "eslint-plugin-no-unsanitized": "4.1.2",
+        "globals": "16.3.0",
+        "jsdom": "26.1.0",
+        "playwright-core": "1.55.0",
+        "prettier": "3.6.2",
+        "typescript": "5.8.3",
+        "vitest": "4.1.11"
+    }
+}
